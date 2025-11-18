@@ -1,0 +1,1 @@
+# xinjiang-tourists-map-demo
