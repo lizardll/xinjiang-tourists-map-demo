@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { MapPin, Calendar, Clock, DollarSign, Thermometer, Camera, Info, Navigation, Mountain, Waves, TreePine, Utensils, Menu, X } from 'lucide-react';
+import { useState } from 'react';
+import { MapPin, Calendar, Clock, DollarSign, Info, Navigation, Mountain, Menu, X } from 'lucide-react';
 import InteractiveMap from './components/InteractiveMap';
 import DayCard from './components/DayCard';
 import InfoPanel from './components/InfoPanel';

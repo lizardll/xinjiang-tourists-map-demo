@@ -1,5 +1,5 @@
 import React from 'react';
-import { DollarSign, Thermometer, Package, AlertCircle, Phone, Shield, Utensils, Camera } from 'lucide-react';
+import { DollarSign, Thermometer, Package, AlertCircle, Phone, Shield, Utensils } from 'lucide-react';
 
 interface RouteInfo {
   budget: {

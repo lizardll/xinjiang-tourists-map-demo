@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
-import { MapPin, Camera, Clock, Navigation, Calendar, MapPinned, Utensils } from 'lucide-react';
+import { MapPin, Clock, Navigation } from 'lucide-react';
 import 'leaflet/dist/leaflet.css';
 import { itinerary } from '../data/travelData';
 
 // Fix for default marker icons in React-Leaflet
-delete (L.Icon.Default.prototype as any)._getIconUrl;
+delete (L.Icon.Default.prototype as unknown as Record<string, unknown>)._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
   iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
@@ -33,7 +33,7 @@ interface InteractiveMapProps {
 }
 
 // Custom marker icons with offset to avoid overlap
-const createCustomIcon = (color: string, type: string, offsetX: number = 0, offsetY: number = 0) => {
+const createCustomIcon = (color: string, type: string, offsetX: number = 0, offsetY: number = 0): L.DivIcon => {
   const iconHtml = `
     <div style="
       background: linear-gradient(135deg, ${color}, ${color}dd);
@@ -63,7 +63,7 @@ const createCustomIcon = (color: string, type: string, offsetX: number = 0, offs
 };
 
 // Create arrow icon for direction
-const createArrowIcon = (color: string, rotation: number) => {
+const createArrowIcon = (color: string, rotation: number): L.DivIcon => {
   const arrowHtml = `
     <div style="
       width: 0;
@@ -133,10 +133,10 @@ const RouteSegments: React.FC<{ attractions: Attraction[]; selectedDay: number |
   useEffect(() => {
     // Clear existing route layers
     map.eachLayer((layer) => {
-      if (layer instanceof L.Polyline && (layer as any).isRouteSegment) {
+      if (layer instanceof L.Polyline && (layer as unknown as Record<string, unknown>).isRouteSegment) {
         map.removeLayer(layer);
       }
-      if (layer instanceof L.Marker && ((layer as any).isDayLabel || (layer as any).isArrow)) {
+      if (layer instanceof L.Marker && (((layer as unknown as Record<string, unknown>).isDayLabel) || ((layer as unknown as Record<string, unknown>).isArrow))) {
         map.removeLayer(layer);
       }
     });
@@ -169,9 +169,9 @@ const RouteSegments: React.FC<{ attractions: Attraction[]; selectedDay: number |
         weight: 4,
         opacity: 0.8,
         dashArray: selectedDay === dayNumber ? undefined : '10, 10',
-      }) as any;
+      }) as unknown as L.Polyline & { isRouteSegment: boolean };
       
-      polyline.isRouteSegment = true;
+      (polyline as unknown as Record<string, unknown>).isRouteSegment = true;
       polyline.addTo(map);
 
       // Calculate bearing for arrow rotation
@@ -185,16 +185,16 @@ const RouteSegments: React.FC<{ attractions: Attraction[]; selectedDay: number |
         icon: createArrowIcon(color, bearing),
         interactive: false,
         zIndexOffset: 500
-      }) as any;
-      arrow1.isArrow = true;
+      }) as unknown as L.Marker & { isArrow: boolean };
+      (arrow1 as unknown as Record<string, unknown>).isArrow = true;
       arrow1.addTo(map);
 
       const arrow2 = L.marker(arrow2Pos, {
         icon: createArrowIcon(color, bearing),
         interactive: false,
         zIndexOffset: 500
-      }) as any;
-      arrow2.isArrow = true;
+      }) as unknown as L.Marker & { isArrow: boolean };
+      (arrow2 as unknown as Record<string, unknown>).isArrow = true;
       arrow2.addTo(map);
 
       // Calculate midpoint for day label
@@ -242,9 +242,9 @@ const RouteSegments: React.FC<{ attractions: Attraction[]; selectedDay: number |
         icon: dayLabelIcon,
         interactive: true,
         zIndexOffset: 1000
-      }) as any;
+      }) as unknown as L.Marker & { isDayLabel: boolean };
       
-      dayLabel.isDayLabel = true;
+      (dayLabel as unknown as Record<string, unknown>).isDayLabel = true;
 
       // Create popup content for day label
       if (dayItinerary) {
@@ -366,7 +366,7 @@ const RouteSegments: React.FC<{ attractions: Attraction[]; selectedDay: number |
     }
 
     // Add global function for button click
-    (window as any).selectDay = (day: number) => {
+    (window as unknown as Record<string, (day: number) => void>).selectDay = (day: number) => {
       onSelectDay(day);
       map.closePopup();
     };
@@ -469,7 +469,7 @@ const InteractiveMap: React.FC<InteractiveMapProps> = ({ attractions, selectedDa
                   <div className="space-y-1">
                     {attraction.highlights.map((highlight, idx) => (
                       <div key={idx} className="flex items-start text-xs text-gray-600">
-                        <Camera className="w-3 h-3 mr-1 mt-0.5 flex-shrink-0 text-purple-500" />
+                        <span className="w-3 h-3 mr-1 mt-0.5 flex-shrink-0 text-purple-500 flex items-center justify-center">✦</span>
                         <span>{highlight}</span>
                       </div>
                     ))}
